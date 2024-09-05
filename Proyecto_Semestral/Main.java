@@ -1,22 +1,28 @@
 package Proyecto_Semestral;
 import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args){
         Scanner input = new Scanner(System.in);
         int respuesta = 0, cont = 0;
-        String[] nombres = new String[400];
-        Cliente[][] pasajeros = new Cliente[20][20];
+        String[] nombres = new String[24];
+        Cliente[][] pasajeros = new Cliente[6][4];
+
         while(respuesta != 8){
             System.out.println("MENU");
             System.out.println("1)Crear cliente, 2)Crear bus, 3)Crear viaje, 4)Vender pasajes, 5)Lista de pasajeros, 6)Lista de ventas, 7)Lista de viajes, 8)Salir");
             respuesta = input.nextInt();
-            Cliente cliente1 = new Cliente();
+
             switch (respuesta) {
                 case 1:
-                    cliente1 = CrearCliente(input, cliente1, nombres, cont);
-                    System.out.println("Registrado nuevo cliente "+cliente1.getnombre());
-                    LlenarMatriz(pasajeros, cliente1);
-                    cont++;
+                    Cliente cliente1 = CrearCliente(input, nombres, cont, pasajeros);
+                    if (cliente1 != null) {
+                        System.out.println("Registrado nuevo cliente " + cliente1.getnombre());
+                        LlenarMatriz(pasajeros, cliente1);
+                        cont++;
+                    } else {
+                        System.out.println("El RUT ya existe. No se creó un nuevo cliente.");
+                    }
                     break;
                 case 2:
                     break;
@@ -35,47 +41,64 @@ public class Main {
                 case 8:
                     System.out.println("Saliendo....");
                     break;
-                
             }
         }
     }
-    public static Cliente CrearCliente(Scanner input, Object cliente, String[] nombre, int contador){
-        String Nombre = "", email = "",apellido_pateno ="",apellido_materno="";
-        int telefono = 0, tratamiento = 0;
+
+    public static Cliente CrearCliente(Scanner input, String[] nombres, int contador, Cliente[][] matriz) {
         System.out.print("Nombre: ");
-        Nombre = input.next();
-        System.out.print("Numero: ");
-        telefono = input.nextInt();
+        String nombre = input.next();
+        System.out.print("Número: ");
+        int telefono = input.nextInt();
+        System.out.print("RUT: ");
+        String rut = input.next();
         System.out.print("Apellido materno: ");
-        apellido_materno = input.next();
+        String apellidoMaterno = input.next();
         System.out.print("Apellido paterno: ");
-        apellido_pateno = input.next();
+        String apellidoPaterno = input.next();
         System.out.println("Tratamiento= Señor[1] o Señora[2]: ");
-        tratamiento = input.nextInt();
+        int tratamiento = input.nextInt();
+
+        while (tratamiento != 1 && tratamiento != 2) {
+            System.out.println("1 o 2");
+            tratamiento = input.nextInt();
+        }
+
         System.out.print("Email: ");
-        email = input.next();
-        System.out.println();
+        String email = input.next();
         System.out.println("Perfil creado");
-        System.out.println();
-        Cliente cliente1 = new Cliente(telefono, email, tratamiento, Nombre, apellido_pateno, apellido_materno);
-        nombre[contador] = Nombre;
+
+        // Verificar si el RUT ya existe en la matriz
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[i].length; j++) {
+                if (matriz[i][j] != null && matriz[i][j].getRut().equals(rut)) {
+                    return null;  // RUT duplicado, no se crea el cliente
+                }
+            }
+        }
+
+        Cliente cliente1 = new Cliente(telefono, email, tratamiento, nombre, apellidoPaterno, apellidoMaterno, rut);
+        nombres[contador] = nombre;
         return cliente1;
     }
-    public static void LlenarMatriz(Object[][] matriz, Object cliente){
-        for(int i = 0; i < matriz.length; i++){
-            for(int j = 0; j < matriz[i].length; j++){
-                if(matriz[i][j] == null){
+
+    public static void LlenarMatriz(Cliente[][] matriz, Cliente cliente) {
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[i].length; j++) {
+                if (matriz[i][j] == null) {
                     matriz[i][j] = cliente;
                     return;
                 }
             }
         }
     }
-    public static void MostrarPasajeros(Object[][] matriz, String[] nombre){
-        for(int i = 0; i < matriz.length; i++){
-            for(int j = 0; j < matriz.length; j++){
-                System.out.println(nombre[i]+" ");
+
+    public static void MostrarPasajeros(Cliente[][] matriz, String[] nombres) {
+        for (int j = 0; j < matriz.length; j++) {
+            if (nombres[j] != null) {
+                System.out.println(nombres[j] + " ");
             }
         }
     }
 }
+
