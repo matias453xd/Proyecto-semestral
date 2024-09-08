@@ -1,21 +1,27 @@
 package Proyecto_Semestral;
 
-public class Pasaporte extends IdPersona {
-    protected String numero;
-    protected String nacionalidad;
+public class PasaporteRut extends IdPersona {
+    protected String rut;
+    protected String pasaporte;
 
-    public Pasaporte(int rut, String pasaporte){
+    public PasaporteRut(String rut, String pasaporte){
+        this.rut = rut;
         this.pasaporte = pasaporte;
+    }
+    public PasaporteRut(){
+    }
+
+    public String getRut(){
+        return rut;
+    }
+    public void setRut(String rut){
         this.rut = rut;
     }
-    @SuppressWarnings("unlikely-arg-type")
-    @Override
-    protected boolean EsIgual() {
-        if(pasaporte.equals(rut)){
-            return false;
-        } else {
-            return true;
-        }
+    public String getPasaporte(){
+        return pasaporte;
     }
-    
+    public void setPasaporte(String pasaporte){
+        this.pasaporte = pasaporte;
+    }
+
 }
