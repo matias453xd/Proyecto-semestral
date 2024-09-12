@@ -12,6 +12,8 @@ public class Main {
         Bus[] buses = new Bus[10];
         Viaje[] viajes = new Viaje[10];
         Venta[] venta = new Venta[10];
+        String[][] asientos = new String[10][4];
+        LlenarMatriz(asientos);
         while(respuesta != 8){
             System.out.println("MENU");
             System.out.println("1)Crear cliente, 2)Crear bus, 3)Crear viaje, 4)Vender pasajes, 5)Lista de pasajeros, 6)Lista de ventas, 7)Lista de viajes, 8)Salir");
@@ -55,7 +57,7 @@ public class Main {
                     }
                     break;
                 case 4:
-                    Venta venta3 = VenderPasajes(input, viajes, buses, pasajeros, venta, patente);
+                    Venta venta3 = VenderPasajes(input, viajes, buses, pasajeros, venta, patente, asientos);
                     if(venta3 != null){
                        System.out.println("Venta realizada exitosamente");
                     } else {
@@ -72,6 +74,7 @@ public class Main {
                     break;
                 case 8:
                     System.out.println("Saliendo....");
+                    input.close();
                     break;
             }
         }
@@ -185,8 +188,10 @@ public class Main {
             if (patente[j].equals(patentes)) {
                 System.out.println("Bus disponible");
                 Viaje viaje3 = new Viaje(fecha, hora, precio); 
-                patente[j] = null;
-                buses[j].setNumeroAsientos(buses[j].getNumeroAsientos()-1);
+                if(buses[j].getNumeroAsientos() <= 0){
+                    System.out.println("No hay asientos");
+                    return null;
+                }
                 System.out.println("El numero de asientos disponibles son: "+buses[j].getNumeroAsientos());
                 return viaje3;
             }
@@ -203,7 +208,7 @@ public class Main {
             }
         }
     }
-    public static Venta VenderPasajes(Scanner input, Viaje[] viajes1, Bus[] buses1, Cliente[][] pasajeros1, Venta[] ventaa, String[] patente){
+    public static Venta VenderPasajes(Scanner input, Viaje[] viajes1, Bus[] buses1, Cliente[][] pasajeros1, Venta[] ventaa, String[] patente, String[][] asientos){
         System.out.print("Id Documento: ");
         int documento = input.nextInt();
         System.out.println("Tipo de documento: [1] Boleta [2] Factura: ");
@@ -212,6 +217,8 @@ public class Main {
         String fecha = input.next();
         System.out.print("Nombre: ");
         String nombree = input.next();
+        System.out.print("Pasajes a comprar: ");
+        int boletos = input.nextInt();
         System.out.println("Rut[1] o Pasaporte[2]: ");
         int cont = input.nextInt();
         String pasaporte = "";
@@ -227,7 +234,7 @@ public class Main {
         }
         Venta venta2 = new Venta(rut,pasaporte,documento,fecha,nombree);
         for(int i = 0; i < ventaa.length; i++){
-            if(ventaa[i].getIDdocumento() == documento){
+            if(ventaa[i] != null && ventaa[i].getIDdocumento()== documento){
                 System.out.println("El numero de documento ya existe");
                 return null;
             }
@@ -235,16 +242,45 @@ public class Main {
         for(int j = 0; j < ventaa.length; j++){
             if(ventaa[j] == null && buses1[j].getNumeroAsientos() > 0){
                 ventaa[j] = venta2;
+                buses1[j].setNumeroAsientos(buses1[j].getNumeroAsientos() - boletos);
+                System.out.println("Cantidad de pasajes: "+boletos);
+                System.out.println("Fecha de viaje: "+fecha);
+                System.out.println("Listado de horarios disponibles");
+                System.out.println("  Bus      Salida       Valor       Asientos");
+                for(int t = 0; t < buses1.length; t++){
+                    for(int h = 0; h < 1; h++){
+                        System.out.print(t+" |");
+                        if(buses1[t] == null || viajes1[t] == null){
+                            continue;
+                        }
+                        System.out.print(buses1[t].getpatente()+"|     |");
+                        System.out.print(viajes1[t].getHora()+"|       |$");
+                        System.out.print(viajes1[t].getPrecio()+"|        |");
+                        System.out.print(buses1[t].getNumeroAsientos()+"|    ");
+                    }
+                    System.out.println();
+                }
+                System.out.println("Elija un viaje en [1"+viajes1.length+"]");
+                int elegir = input.nextInt();
+                if(viajes1[elegir] == null){
+                    while(viajes1[elegir] == null){
+                        System.out.println("El viaje no existe, elija otro indicando el numero numero");
+                        elegir = input.nextInt();
+                    }
+                }
+                System.out.println("Asientos disponibles para el viaje seleccionado: ");
+
+
+
+                return venta2;
+
             } else {
+                System.out.println("No hay asientos disponibles");
                 return null;
             }
         }
-        if(eleccion == 1){
 
-        } else if(eleccion == 2){
-
-        }
-
+        
 
 
 
@@ -254,6 +290,15 @@ public class Main {
 
 
         return venta2;
+    }
+    public static void LlenarMatriz(String[][] Asiento){
+        int numero = 1;
+        for(int i = 0; i < Asiento.length; i++){
+            for(int j = 0; j < 4; j++){
+                Asiento[i][j] = String.valueOf(numero);
+                numero++;
+            }
+        }
     }
 }
 

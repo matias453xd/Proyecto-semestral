@@ -5,6 +5,8 @@ public class Bus {
     protected String marca;
     protected String modelo;
     protected int NumeroAsientos;
+    protected String Salida;
+    protected int Valor;
     public Bus() {
     }
     public Bus(String patente, String marca, String modelo, int NumeroAsientos){
@@ -37,4 +39,5 @@ public class Bus {
     public void setNumeroAsientos(int NumeroAsientos){
         this.NumeroAsientos = NumeroAsientos;
     }
+
 }
