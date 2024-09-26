@@ -5,14 +5,23 @@ public class Bus {
     protected String marca;
     protected String modelo;
     protected int NumeroAsientos;
+    protected String Salida;
+    protected int Valor;
+    protected String[][] asientos;
+    protected int filas;
+    protected int columnas;
     public Bus() {
     }
-    public Bus(String patente, String marca, String modelo, int NumeroAsientos){
+    public Bus(String patente, String marca, String modelo, int NumeroAsientos, int filas, int columnas){
         this.patente = patente;
         this.marca = marca;
         this.modelo = modelo;
         this.NumeroAsientos = NumeroAsientos;
+        this.filas = filas;
+        this.columnas = columnas;
+        this.asientos = new String[filas][columnas];
     }
+
     public String getpatente(){
         return patente;
     }
@@ -36,5 +45,60 @@ public class Bus {
     }
     public void setNumeroAsientos(int NumeroAsientos){
         this.NumeroAsientos = NumeroAsientos;
+    }
+    public int getFilas(){
+        return filas;
+    }
+    public int getColumnas(){
+        return columnas;
+    }
+    public int TotalAsientos(){
+        return filas*columnas;
+    }
+    public void LlenarMatriz(int filas, int columnas){
+        int numero = 1;
+        for(int i = 0; i < filas; i++){
+            for(int j = 0; j < columnas; j++){
+                this.asientos[i][j] = String.valueOf(numero);
+                numero++;
+            }
+        }
+    }
+    public void mostrarMatriz(int filas, int columnas) {
+        for (int i = 0; i < filas; i++) {
+            System.out.print("|");
+            for (int j = 0; j < columnas; j++) {
+                System.out.print(this.asientos[i][j] + "|");
+                if(j % 2 != 0){
+                    System.out.print(" |");
+                }
+            }
+            System.out.println();
+        }
+    }
+    public void setMatriz(String asiento, int filas, int columnas){
+        boolean asientoOcupado = false;
+        for(int i = 0; i < filas; i++){
+            for(int j = 0; j < columnas; j++){
+                if(this.asientos[i][j].equals(asiento)){
+                    if(this.asientos[i][j].equals("*")){
+                        asientoOcupado = true;
+                        System.out.println("El asiento ya esta ocupado");
+                        return;
+                    } else {
+                        this.asientos[i][j] = "*";
+                        System.out.println("Asiento asignado correctamente");
+                        asientoOcupado = false;
+                        return;
+                    }
+
+                }
+            }
+        }
+        if (!asientoOcupado) {
+            System.out.println("El asiento no existe");
+            
+        }
+        
     }
 }
